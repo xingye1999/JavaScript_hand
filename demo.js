@@ -1,21 +1,6 @@
-function Animal(name) {
-  this.name = name
-}
-Animal.prototype.sayHello = function () {
-  console.log(this.name)
-}
-
-function Dog(name, bread) {
-  Animal.call(this, name)
-  this.bread = bread
-}
-
-Dog.prototype = Object.create(Animal.prototype)
-Dog.prototype.sayBread = function () {
-  console.log(this.name, this.bread)
-}
-
-const dog = new Dog('a', 'b')
-
-dog.sayHello()
-dog.sayBread()
+let arr = [1, 2, 3, 4]
+let x = arr.reduce((sum, value, index, arr) => {
+  console.log("index", index)
+  return sum + value
+}, 0)
+console.log(x)
