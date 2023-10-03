@@ -1,4 +1,12 @@
 //功能与promise.all相反
+/**
+ * Promise.any 与 Promise.all 可以看做是相反的。Promise.any
+ * 中只要有一个 Promise 实例成功就成功，只有当所有的 Promise
+ * 实例失败时 Promise.any 才失败，此时Promise.any 会把所有的
+ * 失败/错误集合在一起，返回一个失败的 promise 和AggregateError类型的实例。
+ * @param {*} promiseArr
+ * @returns
+ */
 function promiseAny(promiseArr) {
   return new Promise((resolve, reject) => {
     let result = []
@@ -8,8 +16,8 @@ function promiseAny(promiseArr) {
         (res) => {
           resolve(res)
         },
-        (rej) => {
-          result[i] = rej
+        (err) => {
+          result[i] = err
           count++
           if (count === promiseArr.length)
             reject(new AggregateError(result, "All promises were rejected"))

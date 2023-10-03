@@ -1,3 +1,15 @@
+/**
+ * Promise.all() 方法接收一个 promise 的 iterable 类型（注：Array，
+ * Map，Set都属于ES6的iterable类型）的输入，并且只返回一个Promise实例，
+ * 那个输入的所有 promise 的 resolve 回调的结果是一个数组。这个Promise的
+ * resolve 回调执行是在所有输入的 promise 的 resolve 回调都结束，或者输入
+ * 的 iterable 里没有 promise 了的时候。它的 reject 回调执行是，只要任何一
+ * 个输入的 promise 的 reject 回调执行或者输入不合法的 promise 就会立即抛出
+ * 错误，并且reject的是第一个抛出的错误信息。
+ * @param {*} promiseArr
+ * @returns
+ */
+
 function promiseAll(promiseArr) {
   return new Promise((resolve, reject) => {
     let result = []
