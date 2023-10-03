@@ -16,6 +16,7 @@ class MyPromise {
     // 将成功、失败结果放在this上，便于then、catch访问
     this.value = undefined
     this.reason = undefined
+    // 实现异步调用
     // 成功态回调函数队列
     this.onFulfilledCallbacks = []
     // 失败态回调函数队列
@@ -40,7 +41,6 @@ class MyPromise {
       }
     }
     try {
-      console.log(exector)
       // 立即执行executor
       // 把内部的resolve和reject传入executor，用户可调用resolve和reject
       exector(resolve, reject)
@@ -50,6 +50,7 @@ class MyPromise {
     }
   }
   then(onFulfilled, onRejected) {
+    //实现值穿透
     onFulfilled =
       typeof onFulfilled === "function" ? onFulfilled : (value) => value
     onRejected =
@@ -58,63 +59,61 @@ class MyPromise {
         : (reason) => {
             throw new Error(reason instanceof Error ? reason.message : reason)
           }
-    // 保存this
-    const self = this
     return new MyPromise((resolve, reject) => {
-      if (self.status === PENDING) {
-        self.onFulfilledCallbacks.push(() => {
-          // try捕获错误
-          try {
-            // 模拟微任务
-            setTimeout(() => {
-              const result = onFulfilled(self.value)
+      if (this.status === PENDING) {
+        this.onFulfilledCallbacks.push(() => {
+          setTimeout(() => {
+            // try捕获错误
+            try {
+              // 模拟微任务
+              const result = onFulfilled(this.value)
               // 分两种情况：
               // 1. 回调函数返回值是MyPromise，执行then操作
               // 2. 如果不是MyPromise，调用新MyPromise的resolve函数
               result instanceof MyPromise
                 ? result.then(resolve, reject)
                 : resolve(result)
-            })
-          } catch (e) {
-            reject(e)
-          }
+            } catch (e) {
+              reject(e)
+            }
+          })
         })
-        self.onRejectedCallbacks.push(() => {
-          // 以下同理
-          try {
-            setTimeout(() => {
-              const result = onRejected(self.reason)
+        this.onRejectedCallbacks.push(() => {
+          setTimeout(() => {
+            // 以下同理
+            try {
+              const result = onRejected(this.reason)
               // 不同点：此时是reject
               result instanceof MyPromise
                 ? result.then(resolve, reject)
                 : resolve(result)
-            })
+            } catch (e) {
+              reject(e)
+            }
+          })
+        })
+      } else if (this.status === FULFILLED) {
+        setTimeout(() => {
+          try {
+            const result = onFulfilled(this.value)
+            result instanceof MyPromise
+              ? result.then(resolve, reject)
+              : resolve(result)
           } catch (e) {
             reject(e)
           }
         })
-      } else if (self.status === FULFILLED) {
-        try {
-          setTimeout(() => {
-            const result = onFulfilled(self.value)
+      } else if (this.status === REJECTED) {
+        setTimeout(() => {
+          try {
+            const result = onRejected(this.reason)
             result instanceof MyPromise
               ? result.then(resolve, reject)
               : resolve(result)
-          })
-        } catch (e) {
-          reject(e)
-        }
-      } else if (self.status === REJECTED) {
-        try {
-          setTimeout(() => {
-            const result = onRejected(self.reason)
-            result instanceof MyPromise
-              ? result.then(resolve, reject)
-              : resolve(result)
-          })
-        } catch (e) {
-          reject(e)
-        }
+          } catch (e) {
+            reject(e)
+          }
+        })
       }
     })
   }
@@ -166,15 +165,37 @@ class MyPromise {
     })
   }
 }
-const customPromise = new MyPromise((resolve, reject) => {
-  console.log(1)
-  resolve("Resolved!")
-})
 
-// customPromise
+// const customPromise1 = new MyPromise((resolve, reject) => {
+//   console.log(1)
+//   //resolve("Resolved one!")
+//   reject("Reject one!")
+// })
+// customPromise1
 //   .then((result) => {
-//     console.log("First then:", result)
+//     console.log(2)
+//     console.log("first", result)
+//     return 3
 //   })
-//   .then(() => {
-//     console.log("Second then")
+//   .then((result) => {
+//     console.log("second", result)
+//     return 5
 //   })
+//   .then(4)
+//   .then((result) => {
+//     console.log("third", result)
+//   })
+//   .catch((e) => {
+//     console.log(e)
+//   })
+console.log("-----------------------")
+// const customPromise2 = MyPromise.resolve(1)
+// customPromise2.then((result) => {
+//   console.log(result)
+// })
+
+console.log("------------------------")
+// const customPromise3 = MyPromise.reject(111)
+// customPromise3.catch((result) => {
+//   console.log(result)
+// })
