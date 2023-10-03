@@ -1,3 +1,24 @@
+//功能与promise.all相反
+function promiseAny(promiseArr) {
+  return new Promise((resolve, reject) => {
+    let result = []
+    let count = 0
+    for (let i = 0; i < promiseArr.length; i++) {
+      Promise.resolve(promiseArr[i]).then(
+        (res) => {
+          resolve(res)
+        },
+        (rej) => {
+          result[i] = rej
+          count++
+          if (count === promiseArr.length)
+            reject(new AggregateError(result, "All promises were rejected"))
+        }
+      )
+    }
+  })
+}
+
 const p1 = Promise.resolve("p1")
 const p2 = new Promise((resolve, reject) => {
   setTimeout(() => {
@@ -19,21 +40,21 @@ const p5 = new Promise((resolve, reject) => {
 })
 
 // 所有 Promise 都成功
-Promise.any([p1, p2, p3])
+promiseAny([p1, p2, p3])
   .then((res) => console.log(res))
   .catch((err) => console.log(err)) // p1
 
 // 两个 Promise 成功
-Promise.any([p1, p2, p4])
+promiseAny([p1, p2, p4])
   .then((res) => console.log(res))
   .catch((err) => console.log(err)) // p1
 
 // 只有一个延时成功的 Promise
-Promise.any([p2, p4, p5])
+promiseAny([p2, p4, p5])
   .then((res) => console.log(res))
   .catch((err) => console.log(err)) // p2 延时1秒
 
 // 所有 Promise 都失败
-Promise.any([p4, p5])
+promiseAny([p4, p5])
   .then((res) => console.log(res))
-  .catch((err) => console.log(err)) // AggregateError: All promises were rejected
+  .catch((err) => console.log(err)) // 没有promise成功
