@@ -1,60 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sticky Footer</title>
+  <style>
+    /* 布局容器 */
+    .container {
+      display: flex;
+      /* 使用Flex布局 */
+    }
 
+    /* 左侧导航栏样式 */
+    .sidebar {
+      width: 250px;
+      /* 左侧导航栏的宽度 */
+      background-color: #333;
+      /* 设置背景颜色 */
+      color: #fff;
+      /* 文本颜色 */
+      padding: 20px;
+      /* 内边距 */
+    }
+
+    /* 右侧主体部分样式 */
+    .content {
+      flex: 1;
+      /* 自动填充剩余空间 */
+      padding: 20px;
+      /* 内边距 */
+    }
+
+    /* 头部样式 */
+    .header {
+      background-color: #007bff;
+      /* 设置头部背景颜色 */
+      color: #fff;
+      /* 文本颜色 */
+      padding: 10px;
+      /* 内边距 */
+    }
+
+    /* 示例菜单项样式 */
+    .menu-item {
+      margin-bottom: 10px;
+      /* 菜单项之间的间距 */
+    }
+  </style>
 </head>
 
 <body>
-  <script>
-    const arr = [
-      { id: 2, title: "中国", pid: 0 },
-      { id: 3, title: "广东省", pid: 2 },
-      { id: 4, title: "广州市", pid: 3 },
-      { id: 5, title: "天河区", pid: 4 },
-      { id: 6, title: "湖南省", pid: 2 },
-      { id: 1, title: "俄罗斯", pid: 0 },
-    ]
-    console.log('arr', arr);
-
-    function arrToTree(arr, id) {
-      let res = []
-      for (const item of arr) {
-        if (item.pid === id) {
-          const children = arrToTree(arr, item.id)
-          if (children.length > 0) {
-            res.push({ ...item, children })
-          } else {
-            res.push(item)
-          }
-        }
-      }
-      return res
-    }
-
-    const tree = arrToTree(arr, 0)
-    console.log('tree', tree);
-
-    function treeToArr(obj, res) {
-      const newObj = { ...obj }
-      delete newObj.children
-      res.push(newObj)
-      if (obj.children) {
-        for (const item of obj.children) {
-          treeToArr(item, res)
-        }
-      }
-
-    }
-    let reconArr = []
-    for (let i = 0; i < tree.length; i++) {
-      treeToArr(tree[i], reconArr)
-    }
-    console.log('reconArr', reconArr);
-  </script>
+  <div class="container">
+    <!-- 左侧导航栏 -->
+    <div class="sidebar">
+      <div class="menu-item">菜单项1</div>
+      <div class="menu-item">菜单项2</div>
+      <div class="menu-item">菜单项3</div>
+    </div>
+    <!-- 右侧内容区域 -->
+    <div class="content">
+      <!-- 头部 -->
+      <div class="header">
+        页面标题
+      </div>
+      <!-- 主体内容 -->
+      <div>
+        这里是主体内容，根据业务需求填充内容。
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
