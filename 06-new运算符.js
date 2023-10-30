@@ -6,11 +6,11 @@ function myNew(func, ...args) {
   //让函数的this指向这个对象，执行构造函数的代码（为这个新对象添加属性）
   const res = func.call(obj, ...args)
   //如果构造函数返回了一个对象，则返回该对象；否则，返回新创建的对象。
-  return typeof res === 'object' ? res : obj
+  return typeof res === "object" ? res : obj
 }
 
 function Animal(name) {
   this.name = name
 }
-const dog = myNew(Animal, 'dog')
+const dog = myNew(Animal, "dog")
 console.log(dog)
