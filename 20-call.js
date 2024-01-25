@@ -1,5 +1,5 @@
 Function.prototype.myCall = function (context, ...arg) {
-  context = context === null || context === undefined ? window : Object(context)
+  context = context || window
   context.fn = this
   let result = context.fn(...arg)
   delete context.fn
@@ -8,7 +8,7 @@ Function.prototype.myCall = function (context, ...arg) {
 
 var age = 10
 var obj = {
-  age: 20
+  age: 20,
 }
 function foo(a, b) {
   console.log(this.age + a + b)
