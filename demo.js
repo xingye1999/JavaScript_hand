@@ -1,18 +1,21 @@
-let arr = [1, 2, 3, [5, 5, [6, 7, 8]], 8, 8, 9, [9]]
-// console.log(arr.flat(Infinity))
-
-function flatArr(arr) {
-  let newArr = []
-  for (let v of arr) {
-    if (Array.isArray(v)) {
-      newArr = newArr.concat(flatArr(v))
-    } else {
-      newArr.push(v)
-    }
-  }
-  return newArr
+function add(a, b, c) {
+  return a + b + c
 }
-console.log(flatArr(arr))
 
-console.log([1, 2, 3].concat(5))
-console.log([1, 2, 3].concat([5, 6]))
+function curry(func) {
+  return function curryFunc(...args) {
+    // 实参 < 形参, 返回一个函数，并等待接受剩余参数
+    if (args.length < func.length) {
+      return function () {
+        // 合并每次调用函数时传递的参数
+        return curryFunc(...args, ...arguments)
+      }
+    }
+    // 当实参 >= 形参时，直接执行函数返回结果
+    return func(...args)
+  }
+}
+
+const result = curry(add)
+console.log(result(3)(4)(5))
+console.log(result(3, 4)(5))
