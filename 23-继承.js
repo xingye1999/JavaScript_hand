@@ -17,15 +17,18 @@ function Dog(name, breed) {
 }
 
 // 将父对象的实例设置为子对象的原型
+
+// 如果不使用 Object.create() 来创建子对象 Dog 的原型链，而是直接将 Animal.prototype 赋值给 Dog.prototype，会导致原型链上的直接关联，这样会导致在修改 Dog.prototype 的时候也会影响到 Animal.prototype，从而破坏了原型链的结构。
+
 Dog.prototype = Object.create(Animal.prototype)
 
 // 子对象自己的方法
 Dog.prototype.bark = function () {
-  console.log(`${this.name} is barking`)
+  console.log(`${this.breed} is barking`)
 }
 
 // 创建子对象实例
-const myDog = new Dog('Buddy', 'Golden Retriever')
+const myDog = new Dog("Buddy", "Golden Retriever")
 
 myDog.sayHello() // 调用父对象的方法
 myDog.bark() // 调用子对象的方法
